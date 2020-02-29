@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "lib": ["es2017"],
+    "outDir": "build",
+    "strict": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "paths": {
+      "*": ["types/*", "src/*", "node_modules/*"]
+    },
+    "typeRoots": ["./src/server/types", "./node_modules/@types"]
+  },
+  "include": [
+    "./src/server/**/*",
+    "./types/**/*"
+  ]
+}
