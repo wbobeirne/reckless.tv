@@ -80,6 +80,10 @@ module.exports = {
         target: `http://localhost:${process.env.PORT}`,
         secure: false,
       },
+      "/thumbnail/**": {
+        target: `http://localhost:${process.env.PORT}`,
+        secure: false,
+      },
     },
   },
 } as webpack.Configuration;

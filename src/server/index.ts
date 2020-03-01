@@ -10,25 +10,28 @@ import { env } from "./env";
 import { initDb } from "./db";
 import { initPassport } from "./passport";
 import { router as apiRouter } from "./routes/api";
+import { router as thumbnailRouter } from "./routes/thumbnail";
 import { Session } from "./db/entity/Session";
 
 async function start() {
   // Initialize database & grab session repo
   const db = await initDb();
   const sessionRepo = db.getRepository(Session);
-  
+
   // Configure server
   const app = express();
   app.set("port", env.PORT);
   app.set("views", path.join(__dirname, "views"));
   app.set("view engine", "ejs");
   app.use(helmet());
-  app.use(session({
-    secret: "OHGODCHANGEME",
-    resave: false,
-    saveUninitialized: false,
-    store: new TypeormStore({ repository: sessionRepo })
-  }));
+  app.use(
+    session({
+      secret: "OHGODCHANGEME",
+      resave: false,
+      saveUninitialized: false,
+      store: new TypeormStore({ repository: sessionRepo }),
+    }),
+  );
   app.use(cookieParser());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -43,6 +46,9 @@ async function start() {
 
   // API routes
   app.use("/api", apiRouter);
+
+  // Thumbnail proxy routes
+  app.use("/thumbnail", thumbnailRouter);
 
   // Frontend route
   app.get("*", (_, res) => {

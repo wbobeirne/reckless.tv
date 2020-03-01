@@ -1,13 +1,12 @@
-import React, { useCallback } from "react";
+import React from "react";
 import {
-  Container,
-  Paper,
   Typography,
   Button,
   makeStyles,
   Grid,
   TextField,
 } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { api } from "../lib/api";

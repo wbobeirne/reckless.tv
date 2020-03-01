@@ -18,15 +18,17 @@ export const Template: React.FC = ({ children }) => {
             <Link to="/browse" component={RouterLink}>
               Browse
             </Link>
-            <Button
-              size="small"
-              variant="contained"
-              to="/stream"
-              disableElevation
-              component={RouterLink}
-            >
-              Stream
-            </Button>
+            {user && (
+              <Button
+                size="small"
+                variant="contained"
+                to="/stream"
+                disableElevation
+                component={RouterLink}
+              >
+                Stream
+              </Button>
+            )}
           </div>
           <Typography className={styles.title} variant="h5" noWrap>
             Reckless.tv
@@ -40,7 +42,7 @@ export const Template: React.FC = ({ children }) => {
                   Log In
                 </Link>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   size="small"
                   to="/signup"
                   disableElevation
@@ -88,5 +90,9 @@ const useStyles = makeStyles(theme => ({
   user: {
     width: 240,
     textAlign: "right",
+
+    "& .MuiLink-root": {
+      marginRight: theme.spacing(3),
+    },
   },
 }));

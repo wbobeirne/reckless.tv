@@ -13,6 +13,7 @@ import {
 import { Link } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { api, LivestreamList } from "../lib/api";
+import { FallbackCardMedia } from "../components/FallbackCardMedia";
 
 export const Browse: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -58,7 +59,11 @@ export const Browse: React.FC = () => {
           <Card>
             <Link to={`/channel/${s.user.username}`}>
               <CardActionArea>
-                <CardMedia></CardMedia>
+                <FallbackCardMedia
+                  style={{ height: 180 }}
+                  src={`/thumbnail/${s.livestream.id}/thumbnail.jpg?width=280&height=158fit_mode=smartcrop`}
+                  fallback="https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png?format=jpg&quality=90&v=1530129081"
+                />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="h2">
                     {s.livestream.title}

@@ -31,19 +31,23 @@ const getLivestreamFromRoute = async (req: Request, res: Response, isOwner?: boo
     return null;
   }
 
-  const lsRepo = getRepository(Livestream);
-  const ls = await lsRepo.findOne({ id: livestreamId });
-  if (!ls) {
-    res.status(404).json({ error: "No livestream found with that ID" });
-    return null;
-  }
+  try {
+    const lsRepo = getRepository(Livestream);
+    const ls = await lsRepo.findOne({ id: livestreamId });
+    if (!ls) {
+      res.status(404).json({ error: "No livestream found with that ID" });
+      return null;
+    }
 
-  if (isOwner && req.user && ls.user.id !== req.user.id) {
-    res.status(403).json({ error: "You don't have access to that livestream" });
-    return null;
-  }
+    if (isOwner && req.user && ls.user.id !== req.user.id) {
+      res.status(403).json({ error: "You don't have access to that livestream" });
+      return null;
+    }
 
-  return ls;
+    return ls;
+  } catch (err) {
+    res.status(500).json({ error: "Failed to query for livestream" });
+  }
 };
 
 router.get("/livestream", async (req, res) => {
