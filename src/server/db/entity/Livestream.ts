@@ -1,11 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from "typeorm"
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  JoinTable,
+  UpdateDateColumn,
+} from "typeorm";
+import { LiveStream as MuxLiveStream } from "@mux/mux-node";
 import { User } from "./User";
-import { Livestream as APILivestream } from "../../../shared/types/api";
-
-export enum LivestreamStatus {
-  live,
-  offline,
-}
+import {
+  Livestream as APILivestream,
+  SelfLivestream as APISelfLivestream,
+  LivestreamStatus,
+} from "../../../shared/types/api";
 
 @Entity()
 export class Livestream {
@@ -21,21 +29,45 @@ export class Livestream {
   @Column()
   description!: string;
 
-  @CreateDateColumn()
-  createdDate!: Date;
+  @Column()
+  muxStreamId!: string;
 
-  @ManyToOne(type => User, user => user.livestreams)
+  @Column()
+  muxStreamKey!: string;
+
+  @Column()
+  muxPlaybackId!: string;
+
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
+
+  @ManyToOne(
+    type => User,
+    user => user.livestreams,
+    { eager: true },
+  )
+  @JoinTable()
   user!: User;
-  
-  serialize() {
-    const { id, status, title, description, createdDate, user } = this;
+
+  serialize(): APILivestream {
+    const { id, status, title, description, createdAt } = this;
     return {
       id,
       status,
       title,
       description,
-      createdDate,
-      user: user.serialize(),
-    }
+      createdAt: createdAt.toISOString(),
+    };
+  }
+
+  serializeSelf(): APISelfLivestream {
+    return {
+      ...this.serialize(),
+      streamKey: this.muxStreamKey,
+      playbackId: this.muxPlaybackId,
+    };
   }
 }

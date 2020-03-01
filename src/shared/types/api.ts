@@ -1,5 +1,3 @@
-import { } from "@radar/lnrpc"
-
 export interface User {
   id: string;
   username: string;
@@ -9,6 +7,7 @@ export interface SelfUser extends User {
   pubkey?: string;
   nodeType?: "lnd";
   grpcUrl?: string;
+  createdAt?: string;
 }
 
 export interface AuthArgs {
@@ -31,6 +30,11 @@ export interface NodeResponse {
   pubkey: string;
 }
 
+export enum LivestreamStatus {
+  live,
+  offline,
+}
+
 export interface LivestreamArgs {
   title: string;
   description: string;
@@ -38,7 +42,31 @@ export interface LivestreamArgs {
 
 export interface Livestream {
   id: string;
+  status: LivestreamStatus;
   title: string;
   description: string;
-  user: User;
+  playbackId?: string;
+  // user: User;
+  createdAt: string;
 }
+
+export interface SelfLivestream extends Livestream {
+  streamKey: string;
+  playbackId: string;
+}
+
+export interface UserLivestream {
+  user: User;
+  livestream?: Livestream;
+}
+
+export interface SelfUserLivestream {
+  user: SelfUser;
+  livestream?: SelfLivestream;
+}
+
+export type LivestreamList = Array<{
+  user: User;
+  livestream: Livestream;
+}>
+

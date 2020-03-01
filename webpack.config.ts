@@ -1,6 +1,7 @@
 import path from "path";
 import dotenv from "dotenv";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import webpack from "webpack";
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ const tsLoader = {
                 },
               ],
             ],
+            plugins: isDev ? ["react-hot-loader/babel"] : [],
           },
         ],
       },
@@ -50,19 +52,25 @@ module.exports = {
   output: {
     path: build,
     filename: "script.js",
+    publicPath: "/",
   },
   module: {
     rules: [tsLoader],
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
+    alias: {
+      "react-dom": "@hot-loader/react-dom",
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: `${src}/index.html`,
       title: "Reckless.tv",
+      inject: true,
     }),
   ],
+  stats: isDev ? "errors-warnings" : "normal",
   devServer: {
     historyApiFallback: true,
     compress: true,
@@ -74,4 +82,4 @@ module.exports = {
       },
     },
   },
-};
+} as webpack.Configuration;

@@ -1,11 +1,11 @@
 import React, { useEffect, useCallback, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Grid, TextField, Button, Box, CircularProgress, ButtonBase, Typography, List, ListItem } from "@material-ui/core";
+import { Grid, TextField, Button, Box, CircularProgress } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 import { FormBox } from "./FormBox";
 import { makeFormFieldProps } from "../util/form";
-import { api, Livestream } from "../lib/api";
+import { api, SelfLivestream } from "../lib/api";
 
 interface FormValues {
   title: string;
@@ -13,13 +13,13 @@ interface FormValues {
 }
 
 interface Props {
-  onSelectStream(stream: Livestream): void;
+  onSelectStream(stream: SelfLivestream): void;
 }
 
 export const StreamForm: React.FC<Props> = ({ onSelectStream }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [streams, setStreams] = useState<Livestream[] | null>(null);
-  const [isCreatingStream, setIsCreatingStream] = useState(false);
+  const [stream, setStream] = useState<SelfLivestream | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const form = useFormik<FormValues>({
     initialValues: {
@@ -29,12 +29,17 @@ export const StreamForm: React.FC<Props> = ({ onSelectStream }) => {
     validateOnBlur: false,
     validationSchema: Yup.object().shape({
       title: Yup.string().required(),
-      description: Yup.string().required(),
+      description: Yup.string(),
     }),
     onSubmit: async values => {
       try {
-        const stream = await api.createStream(values);
-        onSelectStream(stream);
+        let res;
+        if (stream) {
+          res = await api.editStream(stream.id, values);
+        } else {
+          res = await api.createStream(values);
+        }
+        onSelectStream(res);
       } catch (err) {
         enqueueSnackbar(err.message, { variant: "error" });
       }
@@ -43,11 +48,10 @@ export const StreamForm: React.FC<Props> = ({ onSelectStream }) => {
 
   const fetchStreams = useCallback(() => {
     return api
-      .getSelfLivestreams()
+      .getSelfLivestream()
       .then(res => {
-        console.log(res);
-        setStreams(res);
-        setIsCreatingStream(!res.length);
+        setStream(res.livestream || null);
+        setIsLoading(false);
       })
       .catch(err => {
         enqueueSnackbar(err.message, { variant: "error" });
@@ -58,14 +62,20 @@ export const StreamForm: React.FC<Props> = ({ onSelectStream }) => {
     fetchStreams();
   }, []);
 
+  useEffect(() => {
+    if (stream && !form.values.title) {
+      form.setValues({ title: stream.title, description: stream.description });
+    }
+  }, [stream, form]);
+
   let content;
-  if (!streams) {
+  if (isLoading) {
     content = (
       <Box p={4} display="flex" alignItems="center" justifyContent="center">
         <CircularProgress />
       </Box>
     );
-  } else if (isCreatingStream) {
+  } else {
     content = (
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -85,7 +95,6 @@ export const StreamForm: React.FC<Props> = ({ onSelectStream }) => {
             placeholder="Limit 80 chars"
             variant="outlined"
             rows={3}
-            required
             multiline
             fullWidth
           />
@@ -99,27 +108,11 @@ export const StreamForm: React.FC<Props> = ({ onSelectStream }) => {
             disabled={form.isSubmitting}
             fullWidth
           >
-            Submit
+            {!!stream ? "Continue" : "Save"}
           </Button>
         </Grid>
       </Grid>
     );
-  } else {
-    content = (
-      <>
-        <Typography variant="h5">Select a Stream</Typography>
-        <List>
-          {streams.map(s => (
-            <ListItem key={s.id} button onClick={() => onSelectStream(s)}>
-
-            </ListItem>
-          ))}
-        </List>
-        <Button variant="contained" size="large" onClick={() => setIsCreatingStream(true)}>
-          Create a New Stream
-        </Button>
-      </>
-    )
   }
   return <FormBox onSubmit={form.handleSubmit}>{content}</FormBox>;
 };

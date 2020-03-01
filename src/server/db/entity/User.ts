@@ -8,6 +8,7 @@ import {
   getRepository,
   getManager,
   JoinTable,
+  UpdateDateColumn,
 } from "typeorm";
 import { compare, hash } from "bcryptjs";
 import { Livestream } from "./Livestream";
@@ -18,7 +19,7 @@ export class User {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   username!: string;
 
   @Column({ nullable: false })
@@ -40,7 +41,10 @@ export class User {
   cert!: string;
 
   @CreateDateColumn()
-  createdDate!: Date;
+  createdAt!: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
 
   @OneToMany(
     type => Livestream,
@@ -87,7 +91,7 @@ export class User {
    * Serialize the user for private API consumption.
    */
   serializeSelf(): APISelfUser {
-    const { id, username, pubkey, nodeType, grpcUrl } = this;
-    return { id, username, pubkey, nodeType, grpcUrl };
+    const { id, username, pubkey, nodeType, grpcUrl, createdAt } = this;
+    return { id, username, pubkey, nodeType, grpcUrl, createdAt: createdAt.toISOString() };
   }
 }

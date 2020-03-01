@@ -3,7 +3,7 @@ import { Stepper, Step, StepLabel, makeStyles } from "@material-ui/core";
 import { NodeForm } from "../components/NodeForm";
 import { StreamForm } from "../components/StreamForm";
 import { BroadcastInstructions } from "../components/BroadcastInstructions";
-import { Livestream } from "../../shared/types/api";
+import { SelfLivestream } from "../../shared/types/api";
 
 enum CreateStep {
   node,
@@ -14,9 +14,9 @@ enum CreateStep {
 export const CreateStream: React.FC = () => {
   const styles = useStyles();
   const [step, setStep] = useState(CreateStep.node);
-  const [stream, setStream] = useState<Livestream | null>(null);
+  const [stream, setStream] = useState<SelfLivestream | null>(null);
 
-  const steps = ["Connect your Node", "Configure your Stream", "Start Broadcasting"];
+  const steps = ["Connect your Node", "Configure your Channel", "Start Broadcasting"];
 
   let content;
   switch (step) {
@@ -27,20 +27,22 @@ export const CreateStream: React.FC = () => {
       content = (
         <StreamForm
           onSelectStream={stream => {
-            setStep(CreateStep.broadcast);
             setStream(stream);
+            setStep(CreateStep.broadcast);
           }}
         />
       );
       break;
     case CreateStep.broadcast:
-      <BroadcastInstructions
-        stream={stream}
-        goToStreamSelect={() => {
-          setStep(CreateStep.stream);
-          setStream(null);
-        }}
-      />;
+      content = (
+        <BroadcastInstructions
+          stream={stream}
+          goToStreamSelect={() => {
+            setStep(CreateStep.stream);
+            setStream(null);
+          }}
+        />
+      );
   }
 
   return (
@@ -57,9 +59,10 @@ export const CreateStream: React.FC = () => {
   );
 };
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   stepper: {
     background: "none",
     padding: 0,
+    marginBottom: theme.spacing(6),
   },
 }));

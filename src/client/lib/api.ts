@@ -33,11 +33,35 @@ class API {
   }
 
   createStream(args: T.LivestreamArgs) {
-    return this.request<T.Livestream>("POST", "/livestream", args);
+    return this.request<T.SelfLivestream>("POST", "/livestream", args);
+  }
+
+  editStream(id: string, args: T.LivestreamArgs) {
+    return this.request<T.SelfLivestream>("PUT", `/livestream/${id}`, args);
+  }
+
+  getLivestreams() {
+    return this.request<T.LivestreamList>("GET", "/livestream");
   }
 
   getSelfLivestreams() {
-    return this.request<T.Livestream[]>("GET", "/user/me/livestreams");
+    return this.request<T.SelfLivestream[]>("GET", "/user/me/livestreams");
+  }
+
+  getUserLivestreams(username: string) {
+    return this.request<T.LivestreamArgs[]>("GET", `/user/${username}/livestreams`);
+  }
+
+  getSelfLivestream() {
+    return this.request<T.SelfUserLivestream>("GET", "/user/me/livestream");
+  }
+
+  getUserLivestream(username: string) {
+    return this.request<T.UserLivestream>("GET", `/user/${username}/livestream`);
+  }
+
+  updateStreamStatus(id: string, status: T.LivestreamStatus) {
+    return this.request<T.SelfLivestream>("PUT", `/livestream/${id}/status`, { status })
   }
 
   // Internal fetch function

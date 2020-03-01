@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, PrimaryColumn } from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryColumn, CreateDateColumn } from "typeorm";
 import { SessionEntity } from "typeorm-store";
 
 @Entity()
@@ -7,8 +7,11 @@ export class Session extends BaseEntity implements SessionEntity {
   id!: string;
 
   @Column()
-  expiresAt!: number;
+  data!: string;
 
   @Column()
-  data!: string;
+  expiresAt!: number;
+
+  @CreateDateColumn()
+  createdAt!: Date;
 }

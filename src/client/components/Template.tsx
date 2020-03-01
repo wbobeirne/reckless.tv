@@ -1,6 +1,6 @@
 import React from "react";
-import { Toolbar, Typography, Button, makeStyles, Container } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Toolbar, Typography, Button, makeStyles, Container, Link } from "@material-ui/core";
+import { Link as RouterLink } from "react-router-dom";
 import { useAuthContext } from "../contexts/Auth";
 
 export const Template: React.FC = ({ children }) => {
@@ -9,39 +9,49 @@ export const Template: React.FC = ({ children }) => {
 
   return (
     <>
-      <Toolbar className={styles.header}>
-        <div style={{ width: 280 }}>
-          <Link to="/">
-            <Button size="small">Home</Button>
-          </Link>
-          <Link to="/browse">
-            <Button size="small">Browse</Button>
-          </Link>
-          <Link to="/stream">
-            <Button size="small" variant="contained" color="primary">
+      <Toolbar className={styles.header} disableGutters>
+        <Container maxWidth="lg" className={styles.headerInner}>
+          <div className={styles.buttons}>
+            <Link to="/" component={RouterLink}>
+              Home
+            </Link>
+            <Link to="/browse" component={RouterLink}>
+              Browse
+            </Link>
+            <Button
+              size="small"
+              variant="contained"
+              to="/stream"
+              disableElevation
+              component={RouterLink}
+            >
               Stream
             </Button>
-          </Link>
-        </div>
-        <Typography className={styles.title} variant="h5" noWrap>
-          Reckless.tv
-        </Typography>
-        <div style={{ width: 280, textAlign: "right" }}>
-          {isChecking ? null : user ? (
-            <Typography>Howdy, {user.username}</Typography>
-          ) : (
-            <>
-              <Link to="/login">
-                <Button size="small">Log In</Button>
-              </Link>
-              <Link to="/signup">
-                <Button variant="outlined" size="small">
+          </div>
+          <Typography className={styles.title} variant="h5" noWrap>
+            Reckless.tv
+          </Typography>
+          <div className={styles.user}>
+            {isChecking ? null : user ? (
+              <Typography>Howdy, {user.username}</Typography>
+            ) : (
+              <>
+                <Link to="/login" component={RouterLink}>
+                  Log In
+                </Link>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  to="/signup"
+                  disableElevation
+                  component={RouterLink}
+                >
                   Sign Up
                 </Button>
-              </Link>
-            </>
-          )}
-        </div>
+              </>
+            )}
+          </div>
+        </Container>
       </Toolbar>
       <Container maxWidth="lg">{children}</Container>
     </>
@@ -54,6 +64,29 @@ const useStyles = makeStyles(theme => ({
     textAlign: "center",
   },
   header: {
-    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(4),
+    background: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+
+    "& .MuiLink-root": {
+      ...theme.typography.button,
+      color: theme.palette.primary.contrastText,
+    },
+  },
+  headerInner: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  buttons: {
+    width: 240,
+    "& .MuiLink-root": {
+      marginRight: theme.spacing(4),
+    },
+  },
+  user: {
+    width: 240,
+    textAlign: "right",
   },
 }));
