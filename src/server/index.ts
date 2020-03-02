@@ -13,6 +13,8 @@ import { initPassport } from "./passport";
 import { Session } from "./db/entity/Session";
 import { startLivestreamLivenessCheck } from "./tasks/liveness";
 
+const clientDir = path.join(__dirname, "../client");
+
 async function start() {
   // Initialize database & grab session repo
   const db = await initDb();
@@ -36,9 +38,9 @@ async function start() {
   app.use(cookieParser());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use("/client", express.static(path.join(__dirname, "client")));
 
   if (process.env.NODE_ENV === "production") {
+    app.use("/client", express.static(clientDir));
     app.use(enforce.HTTPS({ trustProtoHeader: true }));
   }
 
@@ -58,7 +60,7 @@ async function start() {
 
   // Frontend route
   app.get("*", (_, res) => {
-    res.send("Sup");
+    res.sendFile(path.join(clientDir, "index.html"));
   });
 
   // Start the server

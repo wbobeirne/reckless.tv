@@ -47,12 +47,13 @@ const tsLoader = {
 // Client config
 module.exports = {
   name: "client",
+  mode: isDev ? "development" : "production",
   target: "web",
   entry: path.join(src, "index.tsx"),
   output: {
     path: build,
     filename: "script.js",
-    publicPath: "/",
+    publicPath: isDev ? "/" : process.env.PUBLIC_PATH || "/client",
   },
   module: {
     rules: [tsLoader],
@@ -64,6 +65,7 @@ module.exports = {
     },
   },
   plugins: [
+    new webpack.EnvironmentPlugin(["NODE_ENV", "DEBUG"]),
     new HtmlWebpackPlugin({
       template: `${src}/index.html`,
       title: "Reckless.tv",
