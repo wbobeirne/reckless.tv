@@ -27,7 +27,7 @@ async function start() {
   app.use(helmet());
   app.use(
     session({
-      secret: "OHGODCHANGEME",
+      secret: env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
       store: new TypeormStore({ repository: sessionRepo }),

@@ -8,7 +8,7 @@
     "dev:server": "DEBUG=true nodemon",
     "dev:client": "webpack-dev-server --config=./webpack.config.ts",
     "build": "npm run build:server && npm run build:client",
-    "build:server": "tsc && cp -r src/server/views build/views",
+    "build:server": "tsc",
     "build:client": "webpack --mode production --config=./webpack.config.ts",
     "heroku-postbuild": "yarn build",
     "start": "NODE_ENV=production node build/index.js"
