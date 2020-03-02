@@ -5,7 +5,6 @@ import path from "path";
 import enforce from "express-sslify";
 import session from "express-session";
 import cookieParser from "cookie-parser";
-import helmet from "helmet";
 import { TypeormStore } from "typeorm-store";
 import { env } from "./env";
 import { initDb } from "./db";
@@ -26,7 +25,6 @@ async function start() {
   app.set("port", env.PORT);
   app.set("views", path.join(__dirname, "views"));
   app.set("view engine", "ejs");
-  app.use(helmet());
   app.use(
     session({
       secret: env.SESSION_SECRET,
