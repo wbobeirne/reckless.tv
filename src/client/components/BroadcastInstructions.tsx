@@ -46,6 +46,12 @@ export const BroadcastInstructions: React.FC<Props> = ({ stream, goToStreamSelec
                   stream={stream}
                   onReady={() => setDidStream(true)}
                   controls={false}
+                  token={{
+                    id: `${Math.random()}`,
+                    token: stream.playbackId,
+                    expiresAt: new Date(Date.now() + 50000000000).toISOString(),
+                    createdAt: new Date().toISOString(),
+                  }}
                   playing
                   muted
                   autoRetry

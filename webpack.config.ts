@@ -79,6 +79,7 @@ module.exports = {
       "/api/**": {
         target: `http://localhost:${process.env.PORT}`,
         secure: false,
+        ws: true,
       },
       "/thumbnail/**": {
         target: `http://localhost:${process.env.PORT}`,

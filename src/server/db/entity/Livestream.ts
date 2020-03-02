@@ -6,14 +6,15 @@ import {
   CreateDateColumn,
   JoinTable,
   UpdateDateColumn,
+  OneToMany,
 } from "typeorm";
-import { LiveStream as MuxLiveStream } from "@mux/mux-node";
 import { User } from "./User";
 import {
   Livestream as APILivestream,
   SelfLivestream as APISelfLivestream,
   LivestreamStatus,
 } from "../../../shared/types/api";
+import { StreamToken } from "./StreamToken";
 
 @Entity()
 export class Livestream {
@@ -51,6 +52,13 @@ export class Livestream {
   )
   @JoinTable()
   user!: User;
+
+  @OneToMany(
+    type => StreamToken,
+    token => token.livestream,
+  )
+  @JoinTable()
+  tokens!: Promise<StreamToken[]>;
 
   serialize(): APILivestream {
     const { id, status, title, description, createdAt } = this;

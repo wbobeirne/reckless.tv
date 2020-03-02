@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import ReactPlayer, { ReactPlayerProps } from "react-player";
-import { Livestream } from "../../shared/types/api";
+import { Livestream, StreamToken } from "../../shared/types/api";
 import { Typography, makeStyles } from "@material-ui/core";
 import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
 import PortableWifiOffIcon from "@material-ui/icons/PortableWifiOff";
@@ -8,10 +8,11 @@ import BlockIcon from '@material-ui/icons/Block';
 
 interface Props extends ReactPlayerProps {
   stream: Livestream;
+  token?: StreamToken;
   autoRetry?: boolean;
 }
 
-export const StreamPlayer: React.FC<Props> = ({ stream, autoRetry, ...props }) => {
+export const StreamPlayer: React.FC<Props> = ({ stream, token, autoRetry, ...props }) => {
   const styles = useStyles();
   const [playerKey, setPlayerKey] = useState(Math.random());
   const [error, setError] = useState<string | null>(null);
@@ -33,13 +34,13 @@ export const StreamPlayer: React.FC<Props> = ({ stream, autoRetry, ...props }) =
   }, []);
 
   useEffect(() => {
-    if (!stream.playbackId) {
+    if (!token) {
       return setError("You do not have permission to view this stream");
     }
   }, [stream]);
 
   let content;
-  if (!stream.playbackId) {
+  if (!token) {
     content = (
       <div className={styles.error}>
         <BlockIcon />
@@ -67,7 +68,7 @@ export const StreamPlayer: React.FC<Props> = ({ stream, autoRetry, ...props }) =
         key={playerKey}
         className={styles.player}
         onError={handleError}
-        url={`https://stream.mux.com/${stream.playbackId}.m3u8`}
+        url={`https://stream.mux.com/${token.token}.m3u8`}
         width="100%"
         height="100%"
         {...props}

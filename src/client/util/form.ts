@@ -1,6 +1,5 @@
 import React from "react"
 import { FormikErrors, FormikTouched, FormikValues } from "formik"
-import * as Yup from "yup"
 
 // Formik does not provide an interface for the return type of useFormik, so
 // we need to create our own, with only the fields we need.

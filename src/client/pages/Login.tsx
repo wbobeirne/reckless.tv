@@ -20,7 +20,7 @@ export const Login: React.FC = () => {
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
 
-  const form = useFormik({
+  const form = useFormik<FormValues>({
     initialValues: {
       username: "",
       password: "",

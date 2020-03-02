@@ -17,9 +17,6 @@ export const useAuthContext = () => {
   return val;
 };
 
-/**
- * SetupModeProvider provides a method for setup mode to be specified.
- */
 export const AuthProvider: React.FC = ({ children }) => {
   const [user, setUser] = useState<SelfUser | null>(null);
   const [isChecking, setIsChecking] = useState(true);

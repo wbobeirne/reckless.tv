@@ -39,7 +39,7 @@ declare module "@mux/mux-node" {
     list(): Promise<LiveStream[]>;
     signalComplete(id: string): Promise<void>;
     resetStreamKey(id: string): Promise<void>;
-    createPlaybackId(id: string, args: { policy: Policy }): Promise<void>;
+    createPlaybackId(id: string, args: { policy: Policy }): Promise<PlaybackID>;
     deletePlaybackId(id: string): Promise<void>;
     // createSimulcastTarget
     // getSimulcastTarget

@@ -13,6 +13,7 @@ import {
 import { compare, hash } from "bcryptjs";
 import { Livestream } from "./Livestream";
 import { User as APIUser, SelfUser as APISelfUser } from "../../../shared/types/api";
+import { StreamToken } from "./StreamToken";
 
 @Entity()
 export class User {
@@ -48,10 +49,17 @@ export class User {
 
   @OneToMany(
     type => Livestream,
-    stream => stream.user,
+    ls => ls.user,
   )
   @JoinTable()
   livestreams!: Promise<Livestream[]>;
+
+  @OneToMany(
+    type => StreamToken,
+    token => token.user,
+  )
+  @JoinTable()
+  tokens!: Promise<StreamToken[]>;
 
   @BeforeInsert()
   async hashPassword() {

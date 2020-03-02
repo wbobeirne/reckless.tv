@@ -70,3 +70,9 @@ export type LivestreamList = Array<{
   livestream: Livestream;
 }>
 
+export interface StreamToken {
+  id: string;
+  token: string;
+  expiresAt: string;
+  createdAt: string;
+}

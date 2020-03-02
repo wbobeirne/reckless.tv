@@ -4,6 +4,7 @@ import { User } from "../../db/entity/User";
 import { isHex, isBase64 } from "../../../shared/util/validators";
 import { validateNodeCredentials } from "../../lib/lnd";
 import { MuxLivestreams } from "../../lib/mux";
+import { Livestream } from "../../db/entity/Livestream";
 
 export const router = Router();
 
@@ -103,6 +104,17 @@ router.get("/user/:username/livestream", async (req, res) => {
     }
 
     if (req.user && req.user.id === user.id) {
+      // Make sure it still exists in Mux, delete otherwise
+      try {
+        await MuxLivestreams.get(ls.muxStreamId);
+      } catch(err) {
+        if (err && err.type === "not_found") {
+          const lsRepo = getRepository(Livestream);
+          await lsRepo.delete(ls);
+          return res.status(200).json({ user: user.serializeSelf(), livestream: undefined })
+        }
+      }
+
       return res.status(200).json({ user: user.serializeSelf(), livestream: ls.serializeSelf() });
     } else {
       return res.status(200).json({ user: user.serialize(), livestream: ls.serialize() });

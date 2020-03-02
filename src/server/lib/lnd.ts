@@ -2,7 +2,7 @@ import createLnRpc, { LnRpc } from "@radar/lnrpc";
 import { decode } from "bolt11";
 import { NodeArgs, NodeResponse } from "../../shared/types/api";
 
-function makeClient(args: Omit<NodeArgs, "nodeType">): Promise<LnRpc> {
+export function makeLndClient(args: Omit<NodeArgs, "nodeType">): Promise<LnRpc> {
   const cert = new Buffer(args.cert, "base64").toString("ascii");
   return createLnRpc({
     cert,
@@ -14,7 +14,7 @@ function makeClient(args: Omit<NodeArgs, "nodeType">): Promise<LnRpc> {
 export async function validateNodeCredentials(
   args: Omit<NodeArgs, "nodeType">,
 ): Promise<NodeResponse> {
-  const client = await makeClient(args)
+  const client = await makeLndClient(args)
 
   // Run a call to addInvoice so we can extract node info from the BOLT11 string
   const memo = "Reckless.tv Test Invoice";
@@ -34,4 +34,8 @@ export async function validateNodeCredentials(
   return {
     pubkey: decoded.payeeNodeKey,
   };
+}
+
+export function rHashBufferToStr(rHash: any): string {
+  return Buffer.from(rHash as Uint8Array).toString('hex')
 }

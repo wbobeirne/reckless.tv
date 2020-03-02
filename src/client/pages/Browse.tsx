@@ -34,13 +34,13 @@ export const Browse: React.FC = () => {
 
   if (!streams.length) {
     return (
-      <Box p={5} display="flex" alignItems="center" justifyContent="center" textAlign="center">
+      <Box pt={10} display="flex" alignItems="center" justifyContent="center" textAlign="center">
         <div>
-          <Typography variant="h3" gutterBottom>
+          <Typography variant="h4" gutterBottom>
             Looks like nobody's streaming.
           </Typography>
           <Box mb={3}>
-            <Typography variant="h5" color="textSecondary">
+            <Typography variant="body1" color="textSecondary">
               Why not be the first to get this party started?
             </Typography>
           </Box>
@@ -61,7 +61,7 @@ export const Browse: React.FC = () => {
               <CardActionArea>
                 <FallbackCardMedia
                   style={{ height: 180 }}
-                  src={`/thumbnail/${s.livestream.id}/thumbnail.jpg?width=280&height=158fit_mode=smartcrop`}
+                  src={`/thumbnail/${s.livestream.id}/thumbnail.jpg?width=280&height=158&fit_mode=smartcrop`}
                   fallback="https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png?format=jpg&quality=90&v=1530129081"
                 />
                 <CardContent>

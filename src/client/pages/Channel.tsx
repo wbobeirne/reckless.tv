@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { CircularProgress, Grid, makeStyles } from "@material-ui/core";
-import { StreamPlayer } from "../components/StreamPlayer";
 import { api, User, Livestream, SelfLivestream } from "../lib/api";
 import { StreamChat } from "../components/StreamChat";
 import { ChannelInfo } from "../components/ChannelInfo";
 import { ChannelOwnerBanner } from "../components/ChannelOwnerBanner";
+import { ChannelPaymentProvider } from "../contexts/ChannelPayment";
+import { ChannelStream } from "../components/ChannelStream";
 
 const isSelfLivestream = (ls: Livestream | SelfLivestream): ls is SelfLivestream =>
   !!(ls as SelfLivestream).streamKey;
@@ -13,7 +14,7 @@ const isSelfLivestream = (ls: Livestream | SelfLivestream): ls is SelfLivestream
 export const Channel: React.FC = () => {
   const styles = useStyles();
   const { username } = useParams<{ username: string }>();
-  const [user, setUser] = useState<User | null>(null);
+  const [streamer, setStreamer] = useState<User | null>(null);
   const [livestream, setLivestream] = useState<Livestream | SelfLivestream | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,7 +25,7 @@ export const Channel: React.FC = () => {
     api
       .getUserLivestream(username)
       .then(res => {
-        setUser(res.user);
+        setStreamer(res.user);
         setLivestream(res.livestream || null);
       })
       .catch(err => {
@@ -32,7 +33,7 @@ export const Channel: React.FC = () => {
       });
   }, [username]);
 
-  if (!user && !error) {
+  if (!streamer && !error) {
     return <CircularProgress />;
   }
 
@@ -40,7 +41,7 @@ export const Channel: React.FC = () => {
     return <h1>{error}</h1>;
   }
 
-  if (!user) {
+  if (!streamer) {
     return null;
   }
 
@@ -53,9 +54,11 @@ export const Channel: React.FC = () => {
       )}
       <Grid item xs={12} md={9}>
         {livestream ? (
-          <StreamPlayer stream={livestream} controls muted playing />
+          <ChannelPaymentProvider livestream={livestream}>
+            <ChannelStream livestream={livestream} streamer={streamer} />
+          </ChannelPaymentProvider>
         ) : (
-          <h1>{user.username} has no stream</h1>
+          <h1>{streamer.username} has no stream</h1>
         )}
       </Grid>
       <Grid item xs={12} md={3} className={styles.chatColumn}>
@@ -63,7 +66,7 @@ export const Channel: React.FC = () => {
       </Grid>
       {livestream && (
         <Grid item xs={12} md={8} lg={9}>
-          <ChannelInfo user={user} livestream={livestream} />
+          <ChannelInfo user={streamer} livestream={livestream} />
         </Grid>
       )}
     </Grid>

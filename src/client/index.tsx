@@ -4,6 +4,7 @@ import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import { hot } from "react-hot-loader/root";
 import { SnackbarProvider } from "notistack";
+import ReactWebLNFallback from "react-webln-fallback-material-ui";
 import { AuthProvider } from "./contexts/Auth";
 import { Template } from "./components/Template";
 import { AuthRoute } from "./components/AuthRoute";
@@ -40,6 +41,7 @@ const App: React.FC = hot(() => {
           </SnackbarProvider>
         </BrowserRouter>
       </ThemeProvider>
+      <ReactWebLNFallback />
     </>
   );
 });
