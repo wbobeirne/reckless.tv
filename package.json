@@ -55,7 +55,7 @@
     "react-webln-fallback-material-ui": "0.1.4",
     "reflect-metadata": "0.1.13",
     "ts-loader": "6.2.1",
-    "typeorm": "0.2.24",
+    "typeorm": "0.2.25",
     "typeorm-store": "1.2.0",
     "typescript": "3.8.3",
     "webln": "0.2.2",
